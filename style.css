@@ -1,0 +1,309 @@
+/* ===================================
+   RAPTOR 1 - 3D SCROLL ANIMATION
+   Cinematic dark theme with smooth transitions
+   =================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #00d9ff;
+    --secondary-color: #ff6b00;
+    --bg-dark: #0a0a0f;
+    --bg-darker: #050508;
+    --text-light: #e0e0e0;
+    --text-dim: #888;
+    --glow-blue: rgba(0, 217, 255, 0.6);
+    --glow-orange: rgba(255, 107, 0, 0.8);
+}
+
+body {
+    font-family: 'Courier New', 'Consolas', monospace;
+    background: var(--bg-darker);
+    color: var(--text-light);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* ===================================
+   THREE.JS CANVAS - Fixed Background
+   =================================== */
+#raptor-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
+}
+
+/* ===================================
+   SCROLL CONTAINER
+   =================================== */
+.scroll-container {
+    position: relative;
+    z-index: 2;
+    pointer-events: none; /* Allow scroll but not interaction */
+}
+
+.scroll-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Align to right */
+    padding: 2rem;
+}
+
+.stage-content {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    pointer-events: auto;
+    background: rgba(10, 10, 15, 0.6);
+    padding: 2rem 3rem;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    backdrop-filter: blur(10px);
+    margin-right: 3rem; /* Position away from right edge */
+    max-width: 400px; /* Limit card width */
+}
+
+.stage-content.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stage-content h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+    text-shadow: 0 0 20px var(--glow-blue);
+}
+
+.stage-content p {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.1em;
+}
+
+.stage-desc {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    font-style: italic;
+}
+
+/* Final stage special styling */
+.stage-content.final h2.final-title {
+    font-size: 4rem;
+    color: var(--secondary-color);
+    text-shadow: 0 0 30px var(--glow-orange);
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.final-subtitle {
+    font-size: 1rem;
+    color: var(--primary-color);
+    margin-top: 1rem;
+}
+
+.specs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+@keyframes pulse-glow {
+    0%, 100% { text-shadow: 0 0 30px var(--glow-orange); }
+    50% { text-shadow: 0 0 50px var(--glow-orange), 0 0 70px var(--glow-orange); }
+}
+
+/* ===================================
+   PROGRESS BAR
+   =================================== */
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 100;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    box-shadow: 0 0 10px var(--glow-blue);
+    transition: width 0.1s linear;
+}
+
+/* ===================================
+   STAGE INFO OVERLAY
+   =================================== */
+.stage-info {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    z-index: 100;
+    font-size: 0.9rem;
+    background: rgba(10, 10, 15, 0.8);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.stage-label {
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--primary-color);
+    text-transform: uppercase;
+}
+
+.stage-percent {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    font-weight: 300;
+}
+
+/* ===================================
+   LOADING OVERLAY
+   =================================== */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-darker);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loading-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader {
+    text-align: center;
+}
+
+.loader p {
+    margin-top: 1rem;
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    color: var(--primary-color);
+}
+
+#load-percent {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
+    color: var(--text-light);
+}
+
+/* Animated loader ring */
+.loader-ring {
+    width: 80px;
+    height: 80px;
+    border: 4px solid rgba(0, 217, 255, 0.2);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    margin: 0 auto;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 768px) {
+    .stage-content {
+        margin-right: 1rem; /* Less margin on mobile */
+        padding: 1.5rem 2rem;
+    }
+    
+    .stage-content h2 {
+        font-size: 2rem;
+    }
+    
+    .stage-content p {
+        font-size: 1rem;
+    }
+    
+    .stage-content.final h2.final-title {
+        font-size: 2.5rem;
+    }
+    
+    .stage-info {
+        top: 15px;
+        left: 15px;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .specs {
+        font-size: 0.75rem;
+    }
+}
+
+/* ===================================
+   FADE-IN ANIMATION
+   =================================== */
+.fade-in {
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===================================
+   SCROLLBAR STYLING
+   =================================== */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-darker);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 217, 255, 0.3);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 217, 255, 0.5);
+}

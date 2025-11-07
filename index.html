@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raptor 1 Engine - 3D Assembly Sequence</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Three.js canvas - fixed position, fills viewport -->
+    <canvas id="raptor-canvas"></canvas>
+    
+    <!-- Scroll progress indicator -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    
+    <!-- Stage indicators overlay -->
+    <div class="stage-info" id="stage-info">
+        <span class="stage-label">INITIALIZING</span>
+        <span class="stage-percent" id="stage-percent">0%</span>
+    </div>
+    
+    <!-- Scroll container - drives the animation timeline -->
+    <div class="scroll-container">
+        <!-- Stage 1: Camera Approach -->
+        <section class="scroll-section" data-stage="1">
+            <div class="stage-content fade-in">
+                <h2>STAGE 1</h2>
+                <p>Approach Sequence</p>
+                <span class="stage-desc">Camera approaching engine assembly zone</span>
+            </div>
+        </section>
+        
+        <!-- Stage 2: Component Assembly -->
+        <section class="scroll-section" data-stage="2">
+            <div class="stage-content fade-in">
+                <h2>STAGE 2</h2>
+                <p>Component Assembly</p>
+                <span class="stage-desc">Main chamber and turbopump integration</span>
+            </div>
+        </section>
+        
+        <!-- Stage 3: Core Ignition -->
+        <section class="scroll-section" data-stage="3">
+            <div class="stage-content fade-in">
+                <h2>STAGE 3</h2>
+                <p>Core Ignition</p>
+                <span class="stage-desc">Preburner activation sequence</span>
+            </div>
+        </section>
+        
+        <!-- Stage 4: Final Assembly & Rotation -->
+        <section class="scroll-section" data-stage="4">
+            <div class="stage-content fade-in">
+                <h2>STAGE 4</h2>
+                <p>Final Assembly</p>
+                <span class="stage-desc">Complete engine rotation reveal</span>
+            </div>
+        </section>
+        
+        <!-- Stage 5: Raptor 1 Online -->
+        <section class="scroll-section" data-stage="5">
+            <div class="stage-content fade-in final">
+                <h2 class="final-title">RAPTOR 1 ONLINE</h2>
+                <p class="final-subtitle">Methalox Full-Flow Staged Combustion</p>
+                <div class="specs">
+                    <span>Thrust: 185 tf (Sea Level)</span>
+                    <span>Chamber Pressure: 300 bar</span>
+                    <span>Isp: 330s (SL) / 350s (Vac)</span>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loader">
+            <div class="loader-ring"></div>
+            <p>LOADING RAPTOR 1 SYSTEMS</p>
+            <span id="load-percent">0%</span>
+        </div>
+    </div>
+    
+    <!-- Three.js core library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GLTFLoader for model loading (optional if using .glb file) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <!-- Main animation script -->
+    <script src="main.js"></script>
+</body>
+</html>
