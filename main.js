@@ -28,6 +28,13 @@ const loadPercent = document.getElementById('load-percent');
 // INITIALIZATION
 // ===================================
 function init() {
+    // Force scroll to top on page load/refresh
+    window.scrollTo(0, 0);
+
+    // Reset animation state
+    animationState.scrollProgress = 0;
+    animationState.currentStage = 0;
+
     // Create scene
     scene = new THREE.Scene();
     scene.fog = new THREE.Fog(0x0a0a0f, 20, 100);
@@ -101,6 +108,7 @@ function setupLighting() {
 // ===================================
 // CREATE ENGINE PARTS (PROCEDURAL GEOMETRY)
 // ===================================
+
 function createEngineParts() {
     // Material definitions
     const metalMaterial = new THREE.MeshStandardMaterial({
@@ -148,7 +156,7 @@ function createEngineParts() {
 
     // 4. PREBURNER PIPES (small cylinders connecting)
     const pipeGeometry = new THREE.CylinderGeometry(0.2, 0.2, 3, 12);
-    const pipe1 = new THREE.Mesh(pipeGeometry);
+    const pipe1 = new THREE.Mesh(pipeGeometry, metalMaterial);
     pipe1.position.set(-2.5, 1, 1);
     pipe1.rotation.x = Math.PI / 4;
     pipe1.initialPosition = { x: -15, y: 1, z: 1 };
@@ -172,27 +180,48 @@ function createEngineParts() {
     engineParts.core = core;
     engineParts.core.material = emissiveMaterial; // Store reference for glow control
 
+    // up above the nozzle a lil component for ch4 pipekinda
+
     // 6. NOZZLE (cone at bottom)
 
     // Create a lathe shape for the nozzle
     const points = [];
-    for (let i = 0; i < 10; ++i) {
-        points.push(new THREE.Vector2(Math.sin(i * 0.2) * 3 + 3, (i - 5) * 0.8));
-    }
-    const segments = 50;
-    const phiStart = 0; // usually start from 0
-    const phiLength = Math.PI * 2; // full rotation
+    for (let i = 0; i < 10; ++i) { points.push(new THREE.Vector2(Math.sin(i * 0.16) * 3 + 3, (i - 5) * 1)); }
+    const segments = 80;
+    const phiStart = Math.PI * 0; // usually start from 0
+    const phiLength = Math.PI * 2 // full rotation
     // Create the geometry
     const nozzleGeometry = new THREE.LatheGeometry(points, segments, phiStart, phiLength);
     // Create the mesh with a material
     const nozzle = new THREE.Mesh(nozzleGeometry, metalMaterial);
     nozzle.position.set(0, -4, 0);
-    nozzle.initialPosition = { x: 0, y: -20, z: 0 }; // Start below
+    nozzle.initialPosition = { x: 0, y: -10, z: 0 }; // Start below
     nozzle.position.y = nozzle.initialPosition.y;
     nozzle.rotation.x = Math.PI;
     // Add to scene
     scene.add(nozzle);
     engineParts.nozzle = nozzle;
+
+
+    // 6. NOZZLE (cone at bottom)
+
+    // Create a lathe shape for the nozzle
+    // const points = [];
+    // for (let i = 0; i < 10; ++i) { points.push(new THREE.Vector2(Math.sin(i * 0.16) * 3 + 3, (i - 5) * 1)); }
+    // const segments = 80;
+    // const phiStart = Math.PI * 0; // usually start from 0
+    // const phiLength = Math.PI * 2 // full rotation
+    // // Create the geometry
+    // const nozzleGeometry = new THREE.LatheGeometry(points, segments, phiStart, phiLength);
+    // // Create the mesh with a material
+    // const nozzle = new THREE.Mesh(nozzleGeometry, metalMaterial);
+    // nozzle.position.set(0, -4, 0);
+    // nozzle.initialPosition = { x: 0, y: -10, z: 0 }; // Start below
+    // nozzle.position.y = nozzle.initialPosition.y;
+    // nozzle.rotation.x = Math.PI;
+    // // Add to scene
+    // scene.add(nozzle);
+    // engineParts.nozzle = nozzle;
 
     // engineParts.nozzle 
     // const nozzleGeometry = new THREE.ConeGeometry(3.5, 5, 32);
@@ -213,6 +242,53 @@ function createEngineParts() {
     exhaustRing.position.y = exhaustRing.initialPosition.y;
     scene.add(exhaustRing);
     engineParts.exhaustRing = exhaustRing;
+
+    // 8.TVC ACTUATOR USING CYNLIDER MESH
+
+    const outerRadius = 0.2; // thickness of pipe
+    const innerRadius = 9; // optional (for hollow pipe)
+    const height = 10; // length of the rod
+    const radialSegments = 32; // smoothness
+
+    // If you want it hollow, use TubeGeometry or subtract later; for now solid rod:
+    const geometry = new THREE.CylinderGeometry(outerRadius, outerRadius, height, radialSegments);
+
+    const material = new THREE.MeshStandardMaterial({
+        color: 0x00ff88,
+        metalness: 0.5,
+        roughness: 0.3,
+    });
+
+    const tvcRod = new THREE.Mesh(geometry, material);
+
+    // Orient it properly (default cylinder points up along Y)
+    tvcRod.rotation.z = Math.PI / -3.2; // make it horizontal if needed
+    tvcRod.position.set(4.5, 1, 2);
+
+    scene.add(tvcRod);
+    engineParts.tvcRod = tvcRod;
+
+    // 8. Custom TVC Actuator pipe
+    // const actuatorRod = new THREE.BufferGeometry();
+    // const vertices = new Float32Array([
+    //     0, 0, 0, // vertex 0: top
+    //     1, 1, 1, // vertex 1: bottom left
+    //     1.0, -1.0, 0.0, // vertex 2: bottom right
+    //     1.0, 2.65, 1.3, // which direction is this?
+    // ]);
+    // const indices = new Uint32Array([1,2,3]); // Single triangle face
+    // actuatorRod.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    // actuatorRod.setIndex(new THREE.BufferAttribute(indices, 1));
+    // actuatorRod.computeVertexNormals();
+    // const tvcMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff88 });
+    // const tvcRod = new THREE.Mesh(actuatorRod, tvcMaterial);
+    // tvcRod.position.set(4, 12, 0);
+    // tvcRod.initialPosition = { x: 4.5, y: 1, z: 0 };
+    // tvcRod.position.set(tvcRod.initialPosition.x, tvcRod.initialPosition.y, tvcRod.initialPosition.z);
+    // scene.add(tvcRod);
+    // engineParts.tvcRod = tvcRod;
+
+
 
     // Create container group for whole engine (for rotation control)
     engineParts.group = new THREE.Group();
@@ -299,6 +375,30 @@ function animate() {
 
     // Apply smooth easing function (easeInOutCubic)
     const eased = easeInOutCubic(progress);
+
+    // Reset camera and parts to initial state if at top
+    if (progress === 0) {
+        camera.position.set(0, 2, 25);
+        camera.lookAt(0, 0, 0);
+
+        // Reset all parts to initial positions
+        engineParts.baseRing.position.x = -20;
+        engineParts.baseRing.rotation.y = 0;
+        engineParts.chamber.position.y = 15;
+        engineParts.turbopump.position.x = 20;
+        engineParts.turbopump.rotation.y = 0;
+        engineParts.pipe1.position.x = -15;
+        engineParts.pipe2.position.x = -15;
+        engineParts.nozzle.position.y = -20;
+        engineParts.exhaustRing.position.y = -25;
+        engineParts.core.material.emissiveIntensity = 0;
+        engineParts.core.scale.set(1, 1, 1);
+
+        const coreLight = scene.getObjectByName('coreLight');
+        if (coreLight) {
+            coreLight.intensity = 0;
+        }
+    }
 
     // ===== STAGE 1: CAMERA APPROACH (0% - 20%) =====
     if (progress < 0.2) {
@@ -391,8 +491,8 @@ function animate() {
         const easeStage = easeInOutCubic(stageProgress);
 
         // Camera pulls back for dramatic reveal
-        camera.position.z = 13 + (easeStage * 7); // 13 → 20
-        camera.position.y = 3 + (easeStage * 2); // 3 → 5
+        camera.position.z = 15 + (easeStage * 7); // 13 → 20
+        camera.position.y = -5 + (easeStage * 2); // 3 → 5
         camera.lookAt(0, 0, 0);
 
         // Full glow maintained
@@ -439,23 +539,18 @@ function onWindowResize() {
 // SIMULATE LOADING
 // ===================================
 function simulateLoading() {
-    let loadProgress = 0;
-    const loadInterval = setInterval(() => {
-        loadProgress += 2;
-        loadPercent.textContent = `${loadProgress}%`;
-
-        if (loadProgress >= 100) {
-            clearInterval(loadInterval);
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 300);
-        }
-    }, 20);
+    // Immediately hide loading screen
+    loadingOverlay.classList.add('hidden');
 }
 
 // ===================================
 // INITIALIZE ON DOM LOAD
 // ===================================
+// Ensure scroll is at top before page fully loads
+if (history.scrollRestoration) {
+    history.scrollRestoration = 'manual';
+}
+
 window.addEventListener('DOMContentLoaded', init);
 
 /* ========================================================================

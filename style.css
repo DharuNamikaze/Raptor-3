@@ -28,6 +28,11 @@ body {
     line-height: 1.6;
 }
 
+/* Force scroll reset on page load */
+html {
+    scroll-behavior: auto;
+}
+
 /* ===================================
    THREE.JS CANVAS - Fixed Background
    =================================== */
@@ -197,6 +202,8 @@ body {
     justify-content: center;
     z-index: 1000;
     transition: opacity 0.5s ease, visibility 0.5s ease;
+    opacity: 0; /* Hidden by default */
+    visibility: hidden; /* Hidden by default */
 }
 
 .loading-overlay.hidden {
@@ -239,6 +246,7 @@ body {
 
 /* ===================================
    RESPONSIVE DESIGN
+   =================================== */
    =================================== */
 @media (max-width: 768px) {
     .stage-content {
