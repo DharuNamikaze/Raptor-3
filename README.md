@@ -1,6 +1,6 @@
-# Raptor 1 Engine - 3D Scroll Animation
+# Raptor 3 Engine - 3D Scroll Animation
 
-A cinematic, scroll-driven 3D animation of the SpaceX Raptor 1 engine assembly sequence, built with **Three.js**, **HTML**, **CSS**, and **JavaScript** (no frameworks).
+A cinematic, scroll-driven 3D animation of the SpaceX Raptor 3 engine assembly sequence, built with **Three.js**, **HTML**, **CSS**, and **JavaScript** (no frameworks).
 
 ## 🚀 Features
 
@@ -29,7 +29,7 @@ Rapto/
 | **20-40%** | Stage 2: Assembly | Chamber descends, turbopump slides in<br>Pipes connect, nozzle rises |
 | **40-60%** | Stage 3: Ignition | Core ignites with orange glow<br>Emissive intensity increases<br>Pulsing effect activated |
 | **60-80%** | Stage 4: Rotation | Full 360° engine rotation reveal<br>Camera orbits around model |
-| **80-100%** | Stage 5: Online | Camera pulls back (z: 13→20)<br>"RAPTOR 1 ONLINE" displayed<br>Continuous gentle rotation |
+| **80-100%** | Stage 5: Online | Camera pulls back (z: 13→20)<br>"RAPTOR 3 ONLINE" displayed<br>Continuous gentle rotation |
 
 ## 🛠️ Local Setup
 
@@ -71,7 +71,7 @@ Then open: `http://localhost:8000`
 
 ### Adding a Real .glb Model
 
-To replace procedural geometry with a real Raptor 1 model:
+To replace procedural geometry with a real Raptor 3 model:
 
 1. Place your `.glb` file in an `assets/` folder
 2. Update `main.js` to load the model:
